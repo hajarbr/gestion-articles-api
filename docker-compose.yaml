@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: symfony_app
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./apache-config:/etc/apache2/sites-available
+    environment:
+      APP_ENV: dev
+      APP_SECRET: your_secret_key
+      MONGODB_URL: mongodb://mongo:27017/gestion_articles
+      APACHE_DOCUMENT_ROOT: /var/www/html/public
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
